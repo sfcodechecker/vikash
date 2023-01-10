@@ -1,0 +1,16 @@
+{
+"siteURL":"https://trial-ac012.my.salesforce-sites.com/services/apexrest/",
+"orgid":"00D2w00000MGUuy",
+"campaignid":"7012w000001B7WXAA0",
+"gateway":"stripe",
+"p2pIframeURL":"https://trial-ac012.my.salesforce-sites.com/wired4NPSP__donate",
+"save_children_from_hunger":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5ucEAC",
+"make_the_tomorrow_beautiful":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5uhEAC",
+"bring_change":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5umEAC",
+"all_for_love":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5pAEAS",
+"be_marvelous":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5pCEAS",
+"make_a_difference":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000001H5pBEAS",
+"unsubIframeURL":"https://trial-ac012.my.salesforce-sites.com/apex/Unsubscribe?referenceId="
+}
+
+
