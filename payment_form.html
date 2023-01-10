@@ -1,0 +1,239 @@
+<html>
+    <head>
+        <title>Unicare - Building our tomorrow</title>
+        <meta charset="utf-8">
+        <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:200,300,400,500,600,700,800&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+        <link rel="stylesheet" href="css/animate.css">
+
+        <link rel="stylesheet" href="css/owl.carousel.min.css">
+        <link rel="stylesheet" href="css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="css/magnific-popup.css">
+
+
+        <link rel="stylesheet" href="css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="css/jquery.timepicker.css">
+
+        <link rel="stylesheet" href="css/flaticon.css">
+        <link rel="stylesheet" href="css/style.css">
+		<script src="js/jquery.min.js"></script>
+		
+        <script>
+            $.ajax({
+                url: "SFConfig.txt",
+                dataType: "text",
+                success: function (data) {
+                    var SFConfig = JSON.parse(data);
+                    document.getElementById("myForm").action = SFConfig.siteURL + 'Q_Charge/charge';
+                    document.getElementById("oid").value = SFConfig.orgid;
+                    var homemURL = window.location.href;
+                    homemURL = homemURL.substring(0, homemURL.indexOf('payment_form.html'));
+                    document.getElementById("redirecturl").value=homemURL+'receipt.html?';
+                    document.getElementById("gatewayname").value=SFConfig.gateway;
+                }
+            });
+            function unhideInputFields() {
+
+                var chargetype = document.getElementById('chargetype').value;
+                if (chargetype == 'recurring') {
+                    document.getElementById('paymentMethodDiv').hidden = false;
+                    document.getElementById('installmentperiodDiv').hidden = false;
+                    document.getElementById('installmentdateDiv').hidden = false;
+                } else {
+                    document.getElementById('paymentMethodDiv').hidden = true;
+                    document.getElementById('installmentperiodDiv').hidden = true;
+                    document.getElementById('installmentdateDiv').hidden = true;
+                }
+            }
+            function hideSpinner() {
+                document.getElementById("spinner").style.display = "none";
+            }
+            window.addEventListener('submit', function () {
+
+                window.location.reload();
+                /*document.getElementById("spinner").style.display = "block";
+                document.getElementById("mainDiv").style.display = "none";*/
+
+                //setTimeout(hideSpinner, 5000);
+            })
+        </script>
+        <style>
+            .overlay {
+
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 1000;
+            }
+        </style>
+
+    </head>
+    <body>
+
+
+        <form  id="myForm" method="POST" class="appointment" target="_blank">
+            <div class="overlay" id="spinner" style="display:none;">
+                <center style="padding-top:50%">
+                    <div class="spinner-border text-danger" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </center>
+            </div>
+            <div id="mainDiv">
+
+                <input type="hidden" class="form-control" id="oid" name="oid">
+                <input type="hidden" id="redirecturl" name="redirecturl" class="form-control">
+                <input type="hidden" id="gatewayname" name="gatewayname" class="form-control">
+                <input type="hidden" id="organisationname" name="organisationname" class="form-control">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">First Name</label>
+                            <div class="input-wrap">
+                                <div class="icon">
+                                    <span class="fa fa-user"></span>
+                                </div>
+                                <input type="text" id="firstname" name="firstname" class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Last Name</label>
+                            <div class="input-wrap">
+                                <div class="icon">
+                                    <span class="fa fa-user"></span>
+                                </div>
+                                <input type="text" id="lastname" name="lastname" class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Email</label>
+                            <div class="input-wrap">
+                                <div class="icon">
+                                    <span class="fa fa-paper-plane"></span>
+                                </div>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="" required="true">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Amount</label>
+                            <div class="input-wrap">
+                                <div class="icon">
+                                    <span class="fa fa-money"></span>
+                                </div>
+                                <input type="number" id="amount" name="amount" class="form-control" placeholder="" step=".01" required="true">
+                            </div>
+                        </div>
+                    </div><!--
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="gatewayname">Gateway Name</label>
+                            <div class="form-field">
+                                <div class="select-wrap">
+                                    <div class="icon">
+                                        <span class="fa fa-chevron-down"></span>
+                                    </div>
+                                    <select name="gatewayname" id="gatewayname" class="form-control" required="true">
+                                        <option value=""></option>
+                                        <option value="bambora">Bambora</option>
+                                        <option value="ezidebit">Ezidebit</option>
+                                        <option value="payway">PayWay</option>
+                                        <option value="stripe">Stripe</option>
+                                        <option value="simplify">Simplify</option>
+                                        <option value="nab_transact">Nab Transact</option>
+                                        <option value="bpoint">BPoint</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>-->
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="name">Charge Type</label>
+                            <div class="form-field">
+                                <div class="select-wrap">
+                                    <div class="icon">
+                                        <span class="fa fa-chevron-down"></span>
+                                    </div>
+                                    <select name="chargetype" id="chargetype" class="form-control" onchange="unhideInputFields()" required="true">
+                                        <option value="onetime">One Time</option>
+                                        <option value="recurring">Recurring</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="paymentMethodDiv" hidden="true">
+                        <div class="form-group">
+                            <label for="paymentmethod">Payment Method</label>
+                            <div class="form-field">
+                                <div class="select-wrap">
+                                    <div class="icon">
+                                        <span class="fa fa-chevron-down"></span>
+                                    </div>
+                                    <select name="paymentmethod" id="paymentmethod" class="form-control">
+                                        <option value="credit card">Credit Card</option>
+                                        <option value="direct debit">Direct Debit</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="installmentperiodDiv" hidden="true">
+                        <div class="form-group">
+                            <label for="name">Installment Period</label>
+                            <div class="form-field">
+                                <div class="select-wrap">
+                                    <div class="icon">
+                                        <span class="fa fa-chevron-down"></span>
+                                    </div>
+                                    <select name="installmentperiod" id="installmentperiod" class="form-control">
+                                        <option value=""></option>
+                                        <option value="Weekly">Weekly</option>
+                                        <option value="Fortnightly">Fortnightly</option>
+                                        <option value="Monthly">Monthly</option>
+                                        <option value="Quarterly">Quarterly</option>
+                                        <option value="Half-yearly">Half Yearly</option>
+                                        <option value="Yearly">Yearly</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12" id="installmentdateDiv" hidden="true">
+                        <div class="form-group">
+                            <label for="name">Installment Date</label>
+                            <div
+                                class="input-wrap">
+                                <!--<div class="icon"><span class="fa fa-paper-plane"></span></div>-->
+                                <input type="date" id="startdate" name="startdate" class="form-control" placeholder="">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" value="Donate Now" class="btn btn-secondary py-3 px-4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br/>
+            <br/>
+        </form>
+    </body>
+</html>
