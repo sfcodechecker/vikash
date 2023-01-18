@@ -12,3 +12,4 @@
 "make_a_difference":"https://trial-ac012.my.salesforce-sites.com/apex/wired4NPSP__donate?id=a1U2w000000N2myEAC",
 "unsubIframeURL":"https://trial-ac012.my.salesforce-sites.com/apex/Unsubscribe?referenceId="
 }
+
