@@ -1,6 +1,6 @@
 {
 "siteURL":"https://atlascons-wired-release-dev-ed.my.salesforce-sites.com/services/apexrest/",
-"orgid":"	00D2x000004TVSQ",
+"orgid":"00D2x000004TVSQ",
 "campaignid":"7012w000001B7WXAA0",
 "gateway":"stripe",
 "p2pIframeURL":"https://trial-ac012.my.salesforce-sites.com/wired4NPSP__donate",
