@@ -14,7 +14,8 @@
   </style>
 </head>
 <body>
-  <!-- Agentforce Messaging -->
+<h1> Chat </h1>
+<!-- Agentforce Messaging -->
   <script type="text/javascript">
     window.embeddedservice_bootstrap.settings = {
       embeddedServiceBranding: {
@@ -23,18 +24,17 @@
       }
     };
   </script>
-  <script src="https://service.force.com/embeddedservice/5.0/esw.min.js"></script>
-  <script>
-	embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
-
-	embeddedservice_bootstrap.init(
-		'00DgK00000DVffJ',
-		'BH_Test_Messaging_Setting',
-		'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
-		{
-			scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
-		}
-	);
+  
+	<script src="https://service.force.com/embeddedservice/5.0/esw.min.js"></script>
+	<script>
+	  embeddedservice_bootstrap.init(
+			'00DgK00000DVffJ',
+			'BH_Test_Messaging_Setting',
+			'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
+			{
+				scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
+			}
+		);
 </script>
 </body>
 </html>
