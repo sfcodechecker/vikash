@@ -35,9 +35,12 @@
   <div class="loading" id="loadingMessage">Loading Agentforce...</div>
 
   <!-- Iframe that loads your Agentforce page -->
-  <iframe 
+  <iframe
+	style="background-color: transparent;"
+	sandbox="allow-scripts allow-same-origin allow-modals allow-downloads allow-popups allow-popups-to-escape-sandbox"
+	dir="ltr"
     id="agentforceFrame"
-    src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/?lwc.mode=prod"
+    src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748"
     title="Agentforce Chat"
     onload="document.getElementById('loadingMessage').style.display='none';">
   </iframe>
