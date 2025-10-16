@@ -2,48 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Agentforce Chat Window</title>
+  <title>Agentforce Messaging</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    /* Make the page and iframe take the full screen */
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f9;
-      font-family: Arial, sans-serif;
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #555;
-      font-size: 16px;
-    }
-  </style>
 </head>
 <body>
-  <div class="loading" id="loadingMessage">Loading Agentforce...</div>
+  <script type='text/javascript'>
+    function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
-  <!-- Iframe that loads your Agentforce page -->
-  <iframe
-	style="background-color: transparent;"
-	sandbox="allow-scripts allow-same-origin allow-modals allow-downloads allow-popups allow-popups-to-escape-sandbox"
-	dir="ltr"
-    id="agentforceFrame"
-    src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/?lwc.mode=prod"
-    title="Agentforce Chat"
-    onload="document.getElementById('loadingMessage').style.display='none';">
-  </iframe>
+			embeddedservice_bootstrap.init(
+				'00DgK00000DVffJ',
+				'BH_Test_Messaging_Setting',
+				'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
+				{
+					scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
+
+// Call Launch Chat API.
+<script>
+    function launchChat() {
+        embeddedservice_bootstrap.utilAPI.launchChat()
+            .then(() => {
+                // Success handler used to perform actions
+                // when the chat client launches successfully.
+                // For example, create a method that disables the launch chat button.
+                disableLaunchChatButton();
+            }).catch(() => {
+                // Error handler used to perform actions
+                // if the chat client fails to launch.
+                // For example, create a method that hides the launch chat button.
+                hideLaunchChatButton();
+            }).finally(() => {
+                // Finally handler used to perform any clean-up actions
+                // regardless of whether the chat client launches successfully or not.
+                // For example, create a method that logs the user’s attempt to chat.
+                logEndUserAttemptToChat();
+            });
+    }
+</script>
+
+window.addEventListener("load", function() {
+     launchChat();
+   });
 </body>
 </html>
