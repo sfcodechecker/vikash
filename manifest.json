@@ -2,7 +2,7 @@
   "name": "Blue Harvest Agent",
   "short_name": "BH Agent",
   "description": "Blue Harvest Agent — quick access to Agentforce chat and tools.",
-  "start_url": "/?source=pwa",
+  "start_url": "https://sfcodechecker.github.io/vikash/AgentForeTest1.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#f5f6fb",
