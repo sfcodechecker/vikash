@@ -1,0 +1,17 @@
+{
+  "name": "Blue Harvest Agent",
+  "short_name": "App",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "description": "Blue Harvest Agent.",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "https://blueharvest.com.au/wp-content/uploads/2025/02/favicon@4x-100x100.webp",
+      "sizes": "192x192",
+      "type": "image/webp"
+    }
+  ]
+}
