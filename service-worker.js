@@ -3,7 +3,6 @@ self.addEventListener('install', (event) => {
     caches.open('bh-agent-cache').then((cache) => {
       return cache.addAll([
         '/',
-        'https://sfcodechecker.github.io/vikash/index.html',
         'https://sfcodechecker.github.io/vikash/manifest.json'
       ]);
     })
