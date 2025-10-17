@@ -28,12 +28,10 @@
           );
           console.log('Embedded Messaging initialized.');
         setTimeout(() => {
-          embeddedservice_bootstrap.utilAPI.launchChat();
-          try{
+          embeddedservice_bootstrap.utilAPI.launchChat()
+          .then(()=>{
             embeddedservice_bootstrap.utilAPI.hideChatButton();
-          }catch(e){
-
-          }
+          });
         }, 6000);
           
         } else {
