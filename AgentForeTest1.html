@@ -168,6 +168,10 @@
 
   <!-- --- Your existing init script and bootstrap loader --- -->
    <script type="text/javascript">
+    window.addEventListener('load', function(event) {
+        // Code to execute after the page and all its resources are loaded
+        openChatbot();
+    });
     function openChatbot(){
       document.getElementById('chatbotId').style.display = 'block';
       document.getElementById('open-chat-btn').style.display = 'none';
