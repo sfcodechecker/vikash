@@ -27,6 +27,10 @@
             }
           );
           console.log('Embedded Messaging initialized.');
+        setTimeout(() => {
+          embeddedservice_bootstrap.utilAPI.launchChat();
+        }, 2000);
+          
         } else {
           console.warn('embeddedservice_bootstrap not defined at init time.');
         }
@@ -35,7 +39,7 @@
       }
     }
 
-    function launchChat(embeddedservice_bootstrap) {
+    function launchChat() {
         embeddedservice_bootstrap.utilAPI.launchChat()
             .then(() => {
                 // Success handler used to perform actions
