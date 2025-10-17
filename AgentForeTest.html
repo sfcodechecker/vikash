@@ -6,52 +6,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <script type='text/javascript'>
+
+  <script type="text/javascript">
+    // Initialize Embedded Messaging when bootstrap file finishes loading.
     function initEmbeddedMessaging() {
-		try {
-			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
+      try {
+        if (!window.embeddedservice_bootstrap) {
+          console.warn('embeddedservice_bootstrap is not present at init time.');
+          // It's possible bootstrap created it asynchronously; still attempt to init if present.
+        }
 
-			embeddedservice_bootstrap.init(
-				'00DgK00000DVffJ',
-				'BH_Test_Messaging_Setting',
-				'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
-				{
-					scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
-				}
-			);
-		} catch (err) {
-			console.error('Error loading Embedded Messaging: ', err);
-		}
-	};
-</script>
-<script type='text/javascript' src='https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+        // If embeddedservice_bootstrap exists, set settings and initialize
+        if (window.embeddedservice_bootstrap) {
+          embeddedservice_bootstrap.settings.language = 'en_US'; // e.g. 'en_US'
+          embeddedservice_bootstrap.init(
+            '00DgK00000DVffJ',
+            'BH_Test_Messaging_Setting',
+            'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
+            {
+              scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
+            }
+          );
+          console.log('embeddedservice_bootstrap.init() called.');
+        } else {
+          console.error('embeddedservice_bootstrap is undefined during initEmbeddedMessaging.');
+        }
 
-
-// Call Launch Chat API.
-<script>
-    function launchChat() {
-        embeddedservice_bootstrap.utilAPI.launchChat()
-            .then(() => {
-                // Success handler used to perform actions
-                // when the chat client launches successfully.
-                // For example, create a method that disables the launch chat button.
-                disableLaunchChatButton();
-            }).catch(() => {
-                // Error handler used to perform actions
-                // if the chat client fails to launch.
-                // For example, create a method that hides the launch chat button.
-                hideLaunchChatButton();
-            }).finally(() => {
-                // Finally handler used to perform any clean-up actions
-                // regardless of whether the chat client launches successfully or not.
-                // For example, create a method that logs the user’s attempt to chat.
-                logEndUserAttemptToChat();
-            });
+      } catch (err) {
+        console.error('Error loading Embedded Messaging: ', err);
+      }
     }
-	
-	window.addEventListener("load", launchChat); 
-</script>
+  </script>
 
+  <!-- Load Salesforce/Agentforce bootstrap script and call initEmbeddedMessaging on its load -->
+  <script
+    type="text/javascript"
+    src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"
+    onload="initEmbeddedMessaging()"
+    onerror="console.error('Failed to load bootstrap.min.js')"
+  ></script>
+
+  <script type="text/javascript">
+    // --- Helper placeholder functions (replace with your real handlers) ---
+    function disableLaunchChatButton() {
+      console.log('disableLaunchChatButton called (placeholder).');
+      // e.g., document.getElementById('launchBtn').disabled = true;
+    }
+    function hideLaunchChatButton() {
+      console.log('hideLaunchChatButton called (placeholder).');
+      // e.g., document.getElementById('launchBtn').style.display = 'none';
+    }
+    function logEndUserAttemptToChat() {
+      console.log('logEndUserAttemptToChat called (placeholder).');
+      // e.g., send telemetry to your server
+    }
+
+    // Attempt to safely call embeddedservice_bootstrap.utilAPI.launchChat()
+    function tryLaunchChatWithRetries(options) {
+      const {
+        intervalMs = 500,   // how often to check
+        maxAttempts = 20    // total attempts before giving up (intervalMs * maxAttempts = max wait)
+      } = options || {};
+
+      let attempts = 0;
+
+      return new Promise((resolve, reject) => {
+        const handle = setInterval(() => {
+          attempts++;
+
+          const bs = window.embeddedservice_bootstrap;
+          const util = bs && bs.utilAPI;
+          const launchFn = util && util.launchChat;
+
+          if (typeof launchFn === 'function') {
+            clearInterval(handle);
+            console.log('Found embeddedservice_bootstrap.utilAPI.launchChat — launching chat now.');
+            // Call the launchChat promise and forward resolution/rejection
+            util.launchChat()
+              .then(() => {
+                console.log('launchChat() resolved.');
+                resolve();
+              })
+              .catch((err) => {
+                console.error('launchChat() rejected:', err);
+                reject(err);
+              });
+            return;
+          }
+
+          if (attempts >= maxAttempts) {
+            clearInterval(handle);
+            const msg = 'embeddedservice_bootstrap.utilAPI.launchChat did not become available in time.';
+            console.error(msg);
+            reject(new Error(msg));
+            return;
+          }
+
+          // Otherwise keep waiting
+          console.debug(`Waiting for launchChat... attempt ${attempts}/${maxAttempts}`);
+        }, intervalMs);
+      });
+    }
+
+    // Called after the window load event. Will try to launch the chat safely.
+    function launchChatAfterResourcesLoaded() {
+      // Only attempt launching after the full page load (resources done).
+      tryLaunchChatWithRetries({ intervalMs: 500, maxAttempts: 20 })
+        .then(() => {
+          // Success handler
+          disableLaunchChatButton();
+        })
+        .catch((err) => {
+          // Failed to launch within allotted time or launchChat rejected
+          console.warn('Failed to auto-launch chat:', err);
+          hideLaunchChatButton();
+        })
+        .finally(() => {
+          logEndUserAttemptToChat();
+        });
+    }
+
+    // Ensure we run after all page resources have loaded
+    window.addEventListener('load', function () {
+      console.log('window.load fired — attempting to launch chat.');
+      launchChatAfterResourcesLoaded();
+    });
+  </script>
 
 </body>
 </html>
