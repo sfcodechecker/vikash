@@ -47,7 +47,8 @@
   <div style="text-align:center; padding:30px;">
     <button id="open-chat-btn" class="btn">Open Chat Inline</button>
   </div>
-
+    <iframe id="chatbotId" src="/AgentForeTestChatbot.html" style="display: none;" title="Chatbot"></iframe>
+ 
   <div id="inline-chat-host" class="center-container" aria-hidden="true">
     <div id="inline-chat-wrapper">
       <button id="inline-chat-close" aria-label="Close chat">✕</button>
@@ -57,7 +58,10 @@
 
   <!-- Your existing init loader for bootstrap.min.js -->
   <script>
-    function initEmbeddedMessaging() {
+    function openChatbot(){
+      document.getElementById('chatbotId').style.display = 'block';
+    }
+    /*function initEmbeddedMessaging() {
       try {
         if (window.embeddedservice_bootstrap) {
           embeddedservice_bootstrap.settings.language = 'en_US';
@@ -72,11 +76,10 @@
           console.warn('embeddedservice_bootstrap not present at init time.');
         }
       } catch (err) { console.error(err); }
-    }
+    }*/
   </script>
-  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"
-          onload="initEmbeddedMessaging()"
-          onerror="console.error('Failed to load bootstrap.min.js')"></script>
+  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"></script>
+          
 
   <script>
     // Safe utility to wait until util.launchChat exists
@@ -214,3 +217,4 @@
   </script>
 </body>
 </html>
+
