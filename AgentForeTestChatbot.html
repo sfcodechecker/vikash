@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Agentforce - Render Chat In Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Basic page layout */
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background:#f5f6fb; color:#222; }
+    header { padding: 20px; text-align:center; background: #fff; box-shadow: 0 1px 0 rgba(0,0,0,0.06); }
+    main { padding: 40px 16px; display:flex; justify-content:center; align-items:flex-start; gap:24px; min-height:60vh; }
+
+    /* Chat host: treat as part of page content (centered column) */
+    .chat-wrapper {
+      width: 100%;
+      max-width: 980px;      /* page content width */
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    /* The actual host container where we will move the injected chat */
+    #chat-host {
+      width: 100%;
+      display: none; /* hidden until chat is injected and opened */
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    /* A card-style container to make chat look like page content */
+    .chat-card {
+      width: 100%;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 22px rgba(20,24,40,0.08);
+      overflow: hidden;
+      position: relative; /* keep close button inside */
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+      max-height: 85vh;
+    }
+
+    /* Header row for the chat card with close button */
+    .chat-card-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid #eee;
+      background: linear-gradient(0deg, rgba(255,255,255,0.9), rgba(255,255,255,0.9));
+      z-index: 2;
+    }
+
+    .chat-title { font-weight:600; font-size: 16px; color:#1f2937; }
+    .chat-actions { display:flex; gap:8px; align-items:center; }
+
+    .btn {
+      border: none;
+      background: #0b74df;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn.ghost {
+      background: transparent;
+      color: #0b74df;
+      border: 1px solid #e6eef9;
+    }
+    .btn.close {
+      background: transparent;
+      color:#666;
+      padding:6px;
+      font-size:14px;
+      border-radius:6px;
+    }
+
+    /* Container inside which we'll insert the embeddedServiceSidebar */
+    .chat-card-body {
+      flex:1 1 auto;
+      min-height: 420px;
+      max-height: calc(85vh - 56px); /* header height subtracted */
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Ensure the injected container behaves like a child (not fixed) */
+    /* We'll add .embedded-as-child to the original injected element so styles are applied to it */
+    .embedded-as-child {
+      position: static !important;
+      width: 100% !important;
+      height: 100% !important;
+      transform: none !important;
+      top: auto !important;
+      left: auto !important;
+      right: auto !important;
+      bottom: auto !important;
+      z-index: auto !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      overflow: auto !important;
+      display: block !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 720px) {
+      .chat-card { min-height: 60vh; max-height: 90vh; border-radius: 8px; }
+      .chat-title { font-size: 15px; }
+      .btn { font-size: 13px; padding: 7px 10px; }
+    }
+
+    /* Extra: placeholder content on page */
+    .page-column { width: 100%; max-width: 640px; }
+    .placeholder {
+      background: linear-gradient(90deg,#fff,#fbfcff);
+      padding: 18px;
+      border-radius: 10px;
+      box-shadow: 0 6px 18px rgba(23,26,38,0.04);
+    }
+
+    /* When we want to show the chat host, we add .visible class */
+    #chat-host.visible { display:flex; justify-content:center; }
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Site — Embed Agentforce Chat As Page Content</h1>
+  </header>
+
+  <main>
+    <div class="chat-wrapper">
+      <!-- Left: sample textual content -->
+      <!--<div class="page-column">
+        <div class="placeholder">
+          <h2>Product/Article Title</h2>
+          <p>Some page content here. The chat will render as part of the page (centered inside the card on the right) instead of as a floating pop-up.</p>
+          <p>Click the blue button to open chat manually if you prefer:</p>
+          <button id="open-chat-btn" class="btn">Open Chat</button>
+        </div>
+      </div>-->
+
+      <!-- Right: chat host area (we will insert the chat here) -->
+      <div id="chat-host" aria-hidden="true">
+        <div class="chat-card" role="dialog" aria-label="Chat">
+          <div class="chat-card-header">
+            <div class="chat-title">Customer Chat</div>
+            <div class="chat-actions">
+              <button id="popout-toggle" class="btn ghost" title="Pop out (optional)">Pop out</button>
+              <button id="close-chat-btn" class="btn close" aria-label="Close chat">✕</button>
+            </div>
+          </div>
+
+          <div class="chat-card-body" id="chat-card-body">
+            <!-- The embeddedServiceSidebar will be moved here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- --- Your existing init script and bootstrap loader --- -->
+  <script type="text/javascript">
+    window.addEventListener('load', function(event) {
+        // Code to execute after the page and all its resources are loaded
+        initEmbeddedMessaging();
+    });
+    function initEmbeddedMessaging() {
+      try {
+        if (window.embeddedservice_bootstrap) {
+          embeddedservice_bootstrap.settings.language = 'en_US';
+          embeddedservice_bootstrap.init(
+            '00DgK00000DVffJ',
+            'BH_Test_Messaging_Setting',
+            'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
+            {
+              scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
+            }
+          );
+          console.log('Embedded Messaging initialized.');
+        } else {
+          console.warn('embeddedservice_bootstrap not defined at init time.');
+        }
+      } catch (err) {
+        console.error('Error initializing Embedded Messaging:', err);
+      }
+    }
+  </script>
+
+  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"
+          onload="initEmbeddedMessaging()"
+          onerror="console.error('Failed to load bootstrap.min.js')"></script>
+
+  <script type="text/javascript">
+    /***** Utility: try to call launchChat with retries *****/
+    function tryLaunchChatWithRetries({ intervalMs = 500, maxAttempts = 20 } = {}) {
+      let attempts = 0;
+      return new Promise((resolve, reject) => {
+        const timer = setInterval(() => {
+          attempts++;
+          const util = window.embeddedservice_bootstrap?.utilAPI;
+          if (util && typeof util.launchChat === 'function') {
+            clearInterval(timer);
+            util.launchChat()
+              .then(() => resolve(util))
+              .catch((err) => reject(err));
+            return;
+          }
+          if (attempts >= maxAttempts) {
+            clearInterval(timer);
+            reject(new Error('launchChat not available within timeout'));
+          }
+        }, intervalMs);
+      });
+    }
+
+    /***** Utility: wait for injected sidebar element *****/
+    function waitForInjectedSidebar({ intervalMs = 300, maxAttempts = 40 } = {}) {
+      let attempts = 0;
+      return new Promise((resolve, reject) => {
+        const t = setInterval(() => {
+          attempts++;
+          // Salesforce commonly injects an element with this class
+          const injected = document.querySelector('.embeddedServiceSidebar');
+          if (injected) {
+            clearInterval(t);
+            resolve(injected);
+            return;
+          }
+          if (attempts >= maxAttempts) {
+            clearInterval(t);
+            reject(new Error('embeddedServiceSidebar not found'));
+          }
+        }, intervalMs);
+      });
+    }
+
+    /***** Move the injected chat into our page container and adapt styles *****/
+    function hostChatInPage(injectedEl) {
+      try {
+        const host = document.getElementById('chat-card-body');
+        if (!host) throw new Error('chat-card-body not found');
+
+        // If it's already hosted, skip
+        if (host.contains(injectedEl)) {
+          console.log('Chat already hosted in page.');
+          return;
+        }
+
+        // Remove messenger's fixed positioning and make it behave as a child
+        injectedEl.classList.add('embedded-as-child');
+
+        // Append the injected chat element as a child of our host container
+        host.appendChild(injectedEl);
+
+        // Make host visible
+        const chatHostOuter = document.getElementById('chat-host');
+        chatHostOuter.classList.add('visible');
+        chatHostOuter.setAttribute('aria-hidden', 'false');
+
+        console.log('Chat moved into page host.');
+      } catch (err) {
+        console.error('Failed to host chat in page:', err);
+      }
+    }
+
+    /***** Restore (if you want to move it back out) - optional *****/
+    function restoreInjectedSidebar(injectedEl) {
+      try {
+        // Remove our class and attempt to put it back to body
+        injectedEl.classList.remove('embedded-as-child');
+        document.body.appendChild(injectedEl);
+        const chatHostOuter = document.getElementById('chat-host');
+        chatHostOuter.classList.remove('visible');
+        chatHostOuter.setAttribute('aria-hidden', 'true');
+        console.log('Chat restored to original location.');
+      } catch (err) {
+        console.error('Failed to restore chat:', err);
+      }
+    }
+
+    /***** Public flow: open chat inline on page *****/
+    async function openChatInline() {
+      try {
+        // Launch chat (if the embed util is present) and then reposition once injected
+        await tryLaunchChatWithRetries({ intervalMs: 500, maxAttempts: 20 });
+
+        // Wait for the sidebar element to be created
+        const injected = await waitForInjectedSidebar({ intervalMs: 300, maxAttempts: 40 });
+
+        // Host it inside our page
+        hostChatInPage(injected);
+      } catch (err) {
+        console.warn('Could not open chat inline:', err);
+      }
+    }
+
+    /***** Close handler: hide the host and optionally restore the chat node *****/
+    function closeChatInline() {
+      const chatHostOuter = document.getElementById('chat-host');
+      const injected = document.querySelector('.embeddedServiceSidebar');
+      if (injected && chatHostOuter && chatHostOuter.contains(injected)) {
+        // Option A: hide the host only (keep node inside)
+        chatHostOuter.classList.remove('visible');
+        chatHostOuter.setAttribute('aria-hidden', 'true');
+
+        // Option B: restore back into body (uncomment if you prefer)
+        // restoreInjectedSidebar(injected);
+      } else {
+        // Nothing to hide
+        chatHostOuter.classList.remove('visible');
+        chatHostOuter.setAttribute('aria-hidden', 'true');
+      }
+    }
+
+    /***** Wire up buttons on the page *****/
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('open-chat-btn').addEventListener('click', openChatInline);
+      document.getElementById('close-chat-btn').addEventListener('click', closeChatInline);
+
+      // Optional: popout toggle - restores the injected node to the body so it can float again
+      document.getElementById('popout-toggle').addEventListener('click', function () {
+        const injected = document.querySelector('.embeddedServiceSidebar');
+        if (!injected) return;
+        // If currently in our host, restore; otherwise move into host
+        const chatHostOuter = document.getElementById('chat-host');
+        if (chatHostOuter.contains(injected)) {
+          restoreInjectedSidebar(injected);
+        } else {
+          hostChatInPage(injected);
+        }
+      });
+
+      // Optional: auto-open after full load (comment out if you only want manual)
+      window.addEventListener('load', function () {
+        // auto-open inline chat after load
+        // openChatInline();
+      });
+    });
+  </script>
+</body>
+</html>
