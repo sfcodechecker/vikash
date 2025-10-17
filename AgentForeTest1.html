@@ -142,6 +142,7 @@
           <p>Some page content here. The chat will render as part of the page (centered inside the card on the right) instead of as a floating pop-up.</p>
           <p>Click the blue button to open chat manually if you prefer:</p>
           <button id="open-chat-btn" class="btn" onclick="openChatbot();">Open Chat</button>
+          <iframe id="chatbotId" src="https://sfcodechecker.github.io/vikash/AgentForeTestChatbot.html"  style="display: none;" title="Chatbot"></iframe>
         </div>
       </div>
 
@@ -164,12 +165,12 @@
     </div>
   </main>
 
-  <iframe id="chatbotId" src="https://sfcodechecker.github.io/vikash/AgentForeTestChatbot.html" width="500vw" height="1000vh" style="display: none;" title="Chatbot"></iframe>
 
   <!-- --- Your existing init script and bootstrap loader --- -->
    <script type="text/javascript">
     function openChatbot(){
       document.getElementById('chatbotId').style.display = 'block';
+      document.getElementById('open-chat-btn').style.display = 'none';
     }
     </script>
   <!--<script type="text/javascript">
