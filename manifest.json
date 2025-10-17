@@ -1,7 +1,7 @@
 {
   "name": "Blue Harvest Agent",
   "short_name": "App",
-  "start_url": "/?source=pwa",
+  "start_url": "https://sfcodechecker.github.io/vikash/AgentForeTest1.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1976d2",
