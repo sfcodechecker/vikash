@@ -225,87 +225,65 @@
     /* Mobile styles */
     @media (max-width: 768px) {
       header { 
-        padding: 16px 12px; 
+        padding: 12px; 
       }
       
-      header h1 {
-        font-size: 20px;
-      }
-      
-      main { 
-        padding: 16px 12px; 
-        gap: 16px; 
-      }
-      
-      .chat-wrapper {
-        flex-direction: column;
-        gap: 16px;
-      }
-      
-      .page-column,
-      #chat-host {
-        min-width: unset;
-        width: 100%;
-      }
-      
-      #maindiv {
-        height: 35rem;
-        max-height: 70vh;
-      }
-      
-      .placeholder {
-        padding: 16px;
-      }
-      
-      .chat-card { 
-        min-height: 60vh; 
-        max-height: 90vh; 
-        border-radius: 8px; 
-      }
-      
-      .chat-title { 
-        font-size: 15px; 
-      }
-      
-      .btn { 
-        font-size: 13px; 
-        padding: 7px 10px; 
-      }
-      
-      .chat-actions {
-        gap: 6px;
-      }
-      
-      .btn.ghost {
-        display: none; /* Hide popout button on mobile */
-      }
-    }
-
-    /* Small mobile styles */
-    @media (max-width: 480px) {
       header h1 {
         font-size: 18px;
       }
       
       main { 
-        padding: 12px 8px; 
+        padding: 8px; 
+        gap: 12px; 
+      }
+      
+      .chat-wrapper {
+        flex-direction: column;
+        gap: 12px;
+      }
+      
+      .page-column {
+        /* Give iframe major focus - takes most of the screen */
+        min-width: unset;
+        width: 100%;
+        order: 1; /* Show iframe first */
+      }
+      
+      #chat-host {
+        /* Chat section becomes secondary */
+        min-width: unset;
+        width: 100%;
+        order: 2; /* Show chat second */
       }
       
       #maindiv {
-        height: 30rem;
-        max-height: 65vh;
+        /* Make iframe much larger and more prominent */
+        height: calc(100vh - 200px); /* Takes most of viewport height */
+        max-height: 85vh;
+        min-height: 500px;
       }
       
       .placeholder {
-        padding: 12px;
+        padding: 8px;
+        margin-bottom: 16px;
+      }
+      
+      .chat-card { 
+        /* Make chat card smaller and less prominent */
+        min-height: 300px; 
+        max-height: 40vh; 
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(20,24,40,0.06); /* Lighter shadow */
       }
       
       .chat-card-header {
-        padding: 10px 12px;
+        padding: 8px 12px;
+        background: #f8f9fa; /* Lighter background */
       }
       
       .chat-title { 
-        font-size: 14px; 
+        font-size: 14px;
+        color: #666; /* Less prominent color */
       }
       
       .btn { 
@@ -313,23 +291,99 @@
         padding: 6px 8px; 
       }
       
+      .chat-actions {
+        gap: 4px;
+      }
+      
+      .btn.ghost {
+        display: none; /* Hide popout button on mobile */
+      }
+      
+      .chat-card-body {
+        min-height: 250px;
+        max-height: calc(40vh - 40px);
+      }
+    }
+
+    /* Small mobile styles */
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 16px;
+      }
+      
+      main { 
+        padding: 6px; 
+      }
+      
+      #maindiv {
+        /* Even more focus on iframe for small screens */
+        height: calc(100vh - 150px);
+        max-height: 90vh;
+        min-height: 450px;
+      }
+      
+      .placeholder {
+        padding: 6px;
+      }
+      
+      .chat-card {
+        /* Further reduce chat prominence */
+        min-height: 250px;
+        max-height: 35vh;
+      }
+      
+      .chat-card-header {
+        padding: 6px 10px;
+      }
+      
+      .chat-title { 
+        font-size: 13px; 
+      }
+      
+      .btn { 
+        font-size: 11px; 
+        padding: 5px 7px; 
+      }
+      
       .btn.close {
-        padding: 4px;
-        min-width: 28px;
-        min-height: 28px;
+        padding: 3px;
+        min-width: 26px;
+        min-height: 26px;
+      }
+      
+      .chat-card-body {
+        min-height: 200px;
+        max-height: calc(35vh - 35px);
       }
     }
 
     /* Landscape mobile orientation */
     @media (max-width: 768px) and (orientation: landscape) {
       #maindiv {
-        height: 25rem;
-        max-height: 60vh;
+        /* In landscape, iframe takes most horizontal space */
+        height: calc(100vh - 120px);
+        max-height: 85vh;
+        min-height: 300px;
       }
       
       .chat-card {
-        min-height: 50vh;
-        max-height: 80vh;
+        /* Chat becomes even more compact in landscape */
+        min-height: 200px;
+        max-height: 30vh;
+      }
+      
+      .chat-card-body {
+        min-height: 150px;
+        max-height: calc(30vh - 40px);
+      }
+      
+      /* Stack elements more efficiently in landscape */
+      .chat-wrapper {
+        gap: 8px;
+      }
+      
+      .placeholder {
+        margin-bottom: 8px;
       }
     }
 
