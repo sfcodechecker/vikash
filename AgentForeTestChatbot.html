@@ -27,7 +27,7 @@
             }
           );
           console.log('Embedded Messaging initialized.');
-          launchChat();
+          launchChat(embeddedservice_bootstrap);
         } else {
           console.warn('embeddedservice_bootstrap not defined at init time.');
         }
@@ -36,13 +36,13 @@
       }
     }
 
-    function launchChat() {
+    function launchChat(embeddedservice_bootstrap) {
         embeddedservice_bootstrap.utilAPI.launchChat()
             .then(() => {
                 // Success handler used to perform actions
                 // when the chat client launches successfully.
                 // For example, create a method that disables the launch chat button.
-                disableLaunchChatButton();
+                //disableLaunchChatButton();
             }).catch(() => {
                 // Error handler used to perform actions
                 // if the chat client fails to launch.
