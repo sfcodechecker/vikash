@@ -27,7 +27,6 @@
             }
           );
           console.log('Embedded Messaging initialized.');
-          launchChat(embeddedservice_bootstrap);
         } else {
           console.warn('embeddedservice_bootstrap not defined at init time.');
         }
@@ -57,7 +56,7 @@
     }
   </script>
 
-  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js" onload="initEmbeddedMessaging();"></script>
+  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js" onload="initEmbeddedMessaging(); launchChat();"></script>
   
   <!--<script type="text/javascript">
     /***** Utility: try to call launchChat with retries *****/
