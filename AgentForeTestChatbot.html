@@ -196,7 +196,7 @@
 
   <script type="text/javascript">
     /***** Utility: try to call launchChat with retries *****/
-    function tryLaunchChatWithRetries({ intervalMs = 500, maxAttempts = 20 } = {}) {
+    function tryLaunchChatWithRetries() {
       let attempts = 0;
       return new Promise((resolve, reject) => {
         const timer = setInterval(() => {
