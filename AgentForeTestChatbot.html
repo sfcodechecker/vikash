@@ -166,10 +166,10 @@
 
   <!-- --- Your existing init script and bootstrap loader --- -->
   <script type="text/javascript">
-    window.addEventListener('load', function(event) {
+    /*window.addEventListener('load', function(event) {
         // Code to execute after the page and all its resources are loaded
         openChatInline();
-    });
+    });*/
     function initEmbeddedMessaging() {
       try {
         if (window.embeddedservice_bootstrap) {
@@ -183,6 +183,7 @@
             }
           );
           console.log('Embedded Messaging initialized.');
+          openChatInline();
         } else {
           console.warn('embeddedservice_bootstrap not defined at init time.');
         }
@@ -192,11 +193,11 @@
     }
   </script>
 
-  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"></script>
+  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js" onload="initEmbeddedMessaging();"></script>
 
   <script type="text/javascript">
     /***** Utility: try to call launchChat with retries *****/
-    function tryLaunchChatWithRetries() {
+    function tryLaunchChatWithRetries({ intervalMs = 10000, maxAttempts = 100 } = {}) {
       let attempts = 0;
       return new Promise((resolve, reject) => {
         const timer = setInterval(() => {
