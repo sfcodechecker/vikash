@@ -79,6 +79,27 @@
 
   <!-- Your existing bootstrap script -->
   <script>
+    window.addEventListener(
+        "onEmbeddedMessagingButtonCreated", () => {
+            console.log(
+                'Inside Button Created'
+            );
+            embeddedservice_bootstrap.utilAPI.launchChat()
+            .then( () => {
+                console.log(
+                    'Inside then block'
+                );
+            } ).catch( () => {
+                console.log(
+                    'Inside catch block'
+                );
+            } ).finally( () => {
+                console.log(
+                    'Inside finally block'
+                );
+            } );
+        }
+    );
     function initEmbeddedMessaging() {
       try {
         if (window.embeddedservice_bootstrap) {
@@ -321,3 +342,4 @@
   </script>
 </body>
 </html>
+
