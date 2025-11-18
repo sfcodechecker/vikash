@@ -789,28 +789,7 @@
 		<script src="js/google-map.js"></script>
 		<script src="js/main.js"></script>
 
-	<script>
-    window.addEventListener(
-        "onEmbeddedMessagingButtonCreated", () => {
-            console.log(
-                'Inside Button Created'
-            );
-            embeddedservice_bootstrap.utilAPI.launchChat()
-            .then( () => {
-                console.log(
-                    'Inside then block'
-                );
-            } ).catch( () => {
-                console.log(
-                    'Inside catch block'
-                );
-            } ).finally( () => {
-                console.log(
-                    'Inside finally block'
-                );
-            } );
-        }
-    );
+	<script type='text/javascript'>
 	function initEmbeddedMessaging() {
 		try {
 			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
@@ -827,13 +806,17 @@
 			console.error('Error loading Embedded Messaging: ', err);
 		}
 	};
+
+
 </script>
 <script type='text/javascript' src='https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
+	
 		
 	</body>
 
 	</html>
+
 
 
 
