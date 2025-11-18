@@ -806,6 +806,28 @@
 			console.error('Error loading Embedded Messaging: ', err);
 		}
 	};
+
+	window.addEventListener(
+        "onEmbeddedMessagingButtonCreated", () => {
+            console.log(
+                'Inside Button Created'
+            );
+            embeddedservice_bootstrap.utilAPI.launchChat()
+            .then( () => {
+                console.log(
+                    'Inside then block'
+                );
+            } ).catch( () => {
+                console.log(
+                    'Inside catch block'
+                );
+            } ).finally( () => {
+                console.log(
+                    'Inside finally block'
+                );
+            } );
+        }
+    );
 </script>
 <script type='text/javascript' src='https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
@@ -814,6 +836,7 @@
 	</body>
 
 	</html>
+
 
 
 
