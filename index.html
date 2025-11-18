@@ -789,17 +789,38 @@
 		<script src="js/google-map.js"></script>
 		<script src="js/main.js"></script>
 
-	<script type='text/javascript'>
+	<script>
+    window.addEventListener(
+        "onEmbeddedMessagingButtonCreated", () => {
+            console.log(
+                'Inside Button Created'
+            );
+            embeddedservice_bootstrap.utilAPI.launchChat()
+            .then( () => {
+                console.log(
+                    'Inside then block'
+                );
+            } ).catch( () => {
+                console.log(
+                    'Inside catch block'
+                );
+            } ).finally( () => {
+                console.log(
+                    'Inside finally block'
+                );
+            } );
+        }
+    );
 	function initEmbeddedMessaging() {
 		try {
 			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
 			embeddedservice_bootstrap.init(
-				'00DgK00000DVffJ',
-				'BH_Test_Messaging_Setting',
-				'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
+				'00DS900000D6WXB',
+				'Blue_Harvest_Agent',
+				'https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630',
 				{
-					scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com'
+					scrt2URL: 'https://blueharvest--agentforce.sandbox.my.salesforce-scrt.com'
 				}
 			);
 		} catch (err) {
@@ -807,11 +828,12 @@
 		}
 	};
 </script>
-<script type='text/javascript' src='https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<script type='text/javascript' src='https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
 		
 	</body>
 
 	</html>
+
 
 
