@@ -100,246 +100,28 @@
             } );
         }
     );
-    function initEmbeddedMessaging() {
-      try {
-        if (window.embeddedservice_bootstrap) {
-          embeddedservice_bootstrap.settings.language = 'en_US';
-          embeddedservice_bootstrap.init(
-            '00DgK00000DVffJ',
-            'BH_Test_Messaging_Setting',
-            'https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748',
-            { scrt2URL: 'https://orgfarm-c20f71d007-dev-ed.develop.my.salesforce-scrt.com' }
-          );
-          console.log('embeddedservice init called');
-        } else {
-          console.warn('embeddedservice_bootstrap not present at init time');
-        }
-      } catch (e) {
-        console.error('initEmbeddedMessaging error', e);
-      }
-    }
-  </script>
+    <script type='text/javascript'>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
-  <script src="https://orgfarm-c20f71d007-dev-ed.develop.my.site.com/ESWBHTestMessagingSett1760515635748/assets/js/bootstrap.min.js"
-          onload="initEmbeddedMessaging()"
-          onerror="console.error('Failed to load bootstrap.min.js')"></script>
+			embeddedservice_bootstrap.init(
+				'00DS900000D6WXB',
+				'Blue_Harvest_Agent',
+				'https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630',
+				{
+					scrt2URL: 'https://blueharvest--agentforce.sandbox.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
-  <script>
-    // selectors to try for the injected chat container (common names)
-    const CHAT_SELECTORS = [
-      '.embeddedServiceSidebar',
-      '.esw-root',
-      '.esw-container',
-      '.embedded-service-container',
-      '[id^="esw-"]',
-      '.embeddedServiceChat', 
-      '.embeddedServiceLauncher' // last two unlikely but included
-    ];
-
-    // Wait for util.launchChat existence before calling
-    function waitForLaunchFn({interval = 300, maxAttempts = 40} = {}) {
-      return new Promise((resolve, reject) => {
-        let attempts = 0;
-        const t = setInterval(() => {
-          attempts++;
-          const fn = window.embeddedservice_bootstrap?.utilAPI?.launchChat;
-          if (typeof fn === 'function') {
-            clearInterval(t);
-            resolve(fn);
-            return;
-          }
-          if (attempts >= maxAttempts) {
-            clearInterval(t);
-            reject(new Error('launchChat not found'));
-          }
-        }, interval);
-      });
-    }
-
-    // Wait for injected DOM element to appear
-    function waitForInjected({interval = 200, maxAttempts = 60} = {}) {
-      return new Promise((resolve, reject) => {
-        let attempts = 0;
-        const t = setInterval(() => {
-          attempts++;
-          for (const sel of CHAT_SELECTORS) {
-            try {
-              const el = document.querySelector(sel);
-              if (el) {
-                clearInterval(t);
-                resolve(el);
-                return;
-              }
-            } catch (e) { /* ignore invalid selectors */ }
-          }
-          if (attempts >= maxAttempts) {
-            clearInterval(t);
-            reject(new Error('Injected chat element not found'));
-          }
-        }, interval);
-      });
-    }
-
-    // Move the injected chat element into our wrapper and normalize styles
-    function moveInjectedIntoWrapper(injectedEl) {
-      try {
-        const wrapper = document.getElementById('inline-chat-wrapper');
-        if (!wrapper) throw new Error('inline-chat-wrapper missing');
-
-        // If already moved, just show
-        if (wrapper.contains(injectedEl)) {
-          document.getElementById('inline-chat-host').style.display = 'flex';
-          document.getElementById('inline-chat-host').setAttribute('aria-hidden','false');
-          return true;
-        }
-
-        // NOTE: Some embeds create multiple nodes; choose root parent
-        // Add a class to force it to behave like regular element
-        injectedEl.classList.add('embedded-as-child');
-
-        // Remove any inline style attributes that force fixed positioning
-        injectedEl.style.position = 'static';
-        injectedEl.style.top = '';
-        injectedEl.style.left = '';
-        injectedEl.style.right = '';
-        injectedEl.style.bottom = '';
-        injectedEl.style.transform = 'none';
-        injectedEl.style.width = '100%';
-        injectedEl.style.height = '100%';
-        injectedEl.style.zIndex = '';
-
-        // Append into our wrapper
-        wrapper.appendChild(injectedEl);
-
-        // show host
-        document.getElementById('inline-chat-host').style.display = 'flex';
-        document.getElementById('inline-chat-host').setAttribute('aria-hidden','false');
-
-        console.log('Moved injected chat into page wrapper');
-        return true;
-      } catch (err) {
-        console.error('moveInjectedIntoWrapper error', err);
-        return false;
-      }
-    }
-
-    // Primary flow: intercept window.open, call launchChat, then move injected element
-    async function openChatInlineBelowButton() {
-      const openButton = document.getElementById('open-chat-btn');
-      openButton.disabled = true;
-      const origOpen = window.open;
-      let openCalled = false;
-      let capturedUrl = null;
-      let openedWindowRef = null;
-
-      // Patch window.open to capture call (avoids opening a new window)
-      window.open = function(url, name, specs) {
-        openCalled = true;
-        capturedUrl = url;
-        try {
-          // Try to open a blank window as fallback (but we will close it)
-          openedWindowRef = origOpen.call(window, 'about:blank', '_blank');
-          if (openedWindowRef && !openedWindowRef.closed) {
-            // close popup to avoid cluttered blank windows
-            openedWindowRef.close();
-            openedWindowRef = null;
-          }
-        } catch (e) {
-          openedWindowRef = null;
-        }
-        console.log('Intercepted window.open. URL:', url);
-        // return stub in case caller expects window object
-        return { closed: false };
-      };
-
-      try {
-        // Ensure launchChat exists
-        await waitForLaunchFn({ interval: 300, maxAttempts: 40 });
-
-        // Call launch
-        await window.embeddedservice_bootstrap.utilAPI.launchChat();
-        console.log('launchChat() resolved');
-
-        // small delay to allow an injected DOM node to appear
-        await new Promise(res => setTimeout(res, 250));
-
-        // If we captured a popup URL, try to embed via iframe (if allowed)
-        if (capturedUrl) {
-          console.log('Captured popup URL:', capturedUrl);
-          // Try to show iframe inline as fallback (CSP may block)
-          const wrapper = document.getElementById('inline-chat-wrapper');
-
-          // remove previously appended injected nodes if any
-          // create iframe
-          const iframe = document.createElement('iframe');
-          iframe.id = '__inline_chat_iframe';
-          iframe.src = capturedUrl;
-          iframe.style.width = '100%';
-          iframe.style.height = '100%';
-          iframe.style.border = '0';
-          iframe.sandbox = 'allow-same-origin allow-scripts allow-forms';
-
-          // append iframe inside wrapper (below close button)
-          // remove any previously appended iframe
-          const prev = document.getElementById('__inline_chat_iframe');
-          if (prev) prev.remove();
-
-          wrapper.appendChild(iframe);
-          document.getElementById('inline-chat-host').style.display = 'flex';
-          document.getElementById('inline-chat-host').setAttribute('aria-hidden','false');
-          console.log('Inserted iframe with captured popup URL. If blank or blocked, CSP/frame-ancestors blocked it.');
-          openButton.disabled = false;
-          // restore window.open
-          window.open = origOpen;
-          return;
-        }
-
-        // Otherwise, try to find any injected DOM and move it
-        let injected = null;
-        try {
-          injected = await waitForInjected({ interval: 200, maxAttempts: 60 });
-          if (!injected) throw new Error('injected not found');
-        } catch (err) {
-          console.warn('No injected element found after launchChat:', err);
-          // restore window.open and bail
-          window.open = origOpen;
-          openButton.disabled = false;
-          alert('Chat launched but could not find its DOM to embed inline. It may be rendered in a shadow DOM or blocked by CSP.');
-          return;
-        }
-
-        // Move it inside wrapper
-        const moved = moveInjectedIntoWrapper(injected);
-        if (!moved) {
-          alert('Chat injected but could not be moved. See console for details.');
-        }
-      } catch (err) {
-        console.error('openChatInlineBelowButton error', err);
-        alert('Failed to open chat inline: ' + (err && err.message));
-      } finally {
-        // restore original window.open ASAP
-        window.open = origOpen;
-        openButton.disabled = false;
-      }
-    }
-
-    // Close handler
-    document.getElementById('inline-chat-close').addEventListener('click', () => {
-      const host = document.getElementById('inline-chat-host');
-      const wrapper = document.getElementById('inline-chat-wrapper');
-
-      // If we created an iframe, remove it
-      const iframe = document.getElementById('__inline_chat_iframe');
-      if (iframe) iframe.remove();
-
-      // If wrapper contains injected element, you may prefer to restore it. For now just hide
-      host.style.display = 'none';
-      host.setAttribute('aria-hidden','true');
-    });
-
-    // Button click wiring
-    document.getElementById('open-chat-btn').addEventListener('click', openChatInlineBelowButton);
   </script>
 </body>
 </html>
+
 
