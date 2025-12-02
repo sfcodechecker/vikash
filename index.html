@@ -795,47 +795,25 @@
 			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
 			embeddedservice_bootstrap.init(
-				'00DS900000D6WXB',
+				'00DS90000061k29',
 				'Blue_Harvest_Agent',
-				'https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630',
+				'https://blueharvest--demo.sandbox.my.site.com/ESWBlueHarvestAgent1764670465123',
 				{
-					scrt2URL: 'https://blueharvest--agentforce.sandbox.my.salesforce-scrt.com'
+					scrt2URL: 'https://blueharvest--demo.sandbox.my.salesforce-scrt.com'
 				}
 			);
 		} catch (err) {
 			console.error('Error loading Embedded Messaging: ', err);
 		}
 	};
-
-	window.addEventListener(
-        "onEmbeddedMessagingButtonCreated", () => {
-            console.log(
-                'Inside Button Created'
-            );
-            embeddedservice_bootstrap.utilAPI.launchChat()
-            .then( () => {
-                console.log(
-                    'Inside then block'
-                );
-            } ).catch( () => {
-                console.log(
-                    'Inside catch block'
-                );
-            } ).finally( () => {
-                console.log(
-                    'Inside finally block'
-                );
-            } );
-        }
-    );
 </script>
-<script type='text/javascript' src='https://blueharvest--agentforce.sandbox.my.site.com/ESWBlueHarvestAgent1762928120630/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+<script type='text/javascript' src='https://blueharvest--demo.sandbox.my.site.com/ESWBlueHarvestAgent1764670465123/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 
-	
 		
 	</body>
 
 	</html>
+
 
 
 
